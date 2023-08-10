@@ -30,32 +30,32 @@ func worker(ip string, tasks chan int, resultChan chan result) {
 
 func main() {
 	ip := "127.0.0.1"
-	tasks := make(chan int, 100)
+	portsBuf := make(chan int, 100)
 	retChan := make(chan result)
 	resultList := make([]result, 0)
 
 	startTime := time.Now()
 
 	// 启动协程池
-	for i := 0; i < cap(tasks); i++ {
-		go worker(ip, tasks, retChan)
+	for i := 0; i < cap(portsBuf); i++ {
+		go worker(ip, portsBuf, retChan)
 	}
 
-	// 接收处理结果
+	// 初始化portsBuf,
 	go func() {
-		for i := 0; i < 1024; i++ {
-			ret := <-retChan
-			resultList = append(resultList, ret)
+		for p := 0; p < 1024; p++ {
+			portsBuf <- p
 		}
 	}()
 
-	// 初始化tasks
+	// 接收处理结果
 	for i := 0; i < 1024; i++ {
-		tasks <- i
+		ret := <-retChan
+		resultList = append(resultList, ret)
 	}
 
-	//close(tasks)
-	//close(retChan)
+	close(portsBuf)
+	close(retChan)
 
 	// 端口排序
 	for _, ret := range resultList {
