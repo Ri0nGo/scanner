@@ -11,7 +11,7 @@
 
 ## 参数说明
 ```
- main.exe --help
+D:\projects\scanner>scanner.exe --help
 Usage of main.exe:
   -h string  设置主机地址
         host address (default "127.0.0.1")
