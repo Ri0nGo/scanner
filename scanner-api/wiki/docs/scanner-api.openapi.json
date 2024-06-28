@@ -1,0 +1,175 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "scanner-api",
+    "description": "",
+    "version": "1.0.0"
+  },
+  "tags": [
+    {
+      "name": "Scan"
+    }
+  ],
+  "paths": {
+    "/api/scan/start": {
+      "post": {
+        "summary": "开始扫描",
+        "x-apifox-folder": "Scan",
+        "x-apifox-status": "developing",
+        "deprecated": false,
+        "description": "",
+        "tags": [
+          "Scan"
+        ],
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {},
+                "x-apifox-orders": [],
+                "x-apifox-ignore-properties": []
+              },
+              "example": "{\r\n    \"uuid\": \"{{scan_uuid}}\",\r\n    \"scan_type\": [\r\n        {\r\n            \"type\": \"PING\"\r\n        },\r\n        {\r\n            \"type\": \"TCP\",\r\n            \"ports\": \"80,30880\"\r\n        }\r\n    ],\r\n    \"address\": {\r\n        \"type\": \"IP\",\r\n        \"ips\": [\r\n            \"192.168.1.1\",\r\n            \"192.168.1.197\", \r\n            \"192.168.1.109\"\r\n        ]\r\n        // \"type\": \"NETWORK\",\r\n        // \"ip_network\": \"192.168.1.0/24\"\r\n    }\r\n}\r\n"
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {},
+                  "x-apifox-orders": [],
+                  "x-apifox-ignore-properties": []
+                }
+              }
+            }
+          }
+        },
+        "x-run-in-apifox": "https://apifox.com/web/project/4739693/apis/api-188902593-run",
+        "security": []
+      }
+    },
+    "/api/scan/get_uuid": {
+      "get": {
+        "summary": "获取uuid",
+        "x-apifox-folder": "Scan",
+        "x-apifox-status": "developing",
+        "deprecated": false,
+        "description": "",
+        "tags": [
+          "Scan"
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {},
+                  "x-apifox-orders": [],
+                  "x-apifox-ignore-properties": []
+                }
+              }
+            }
+          }
+        },
+        "x-run-in-apifox": "https://apifox.com/web/project/4739693/apis/api-188902594-run",
+        "security": []
+      }
+    },
+    "/api/scan/stop": {
+      "get": {
+        "summary": "停止扫描",
+        "x-apifox-folder": "Scan",
+        "x-apifox-status": "developing",
+        "deprecated": false,
+        "description": "",
+        "tags": [
+          "Scan"
+        ],
+        "parameters": [
+          {
+            "name": "uuid",
+            "in": "query",
+            "description": "",
+            "required": false,
+            "example": "{{scan_uuid}}",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {},
+                  "x-apifox-orders": [],
+                  "x-apifox-ignore-properties": []
+                }
+              }
+            }
+          }
+        },
+        "x-run-in-apifox": "https://apifox.com/web/project/4739693/apis/api-188902595-run",
+        "security": []
+      }
+    },
+    "/api/scan/{uuid}": {
+      "get": {
+        "summary": "获取扫描结果",
+        "x-apifox-folder": "Scan",
+        "x-apifox-status": "developing",
+        "deprecated": false,
+        "description": "",
+        "tags": [
+          "Scan"
+        ],
+        "parameters": [
+          {
+            "name": "uuid",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "example": "{{scan_uuid}}",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {},
+                  "x-apifox-orders": [],
+                  "x-apifox-ignore-properties": []
+                }
+              }
+            }
+          }
+        },
+        "x-run-in-apifox": "https://apifox.com/web/project/4739693/apis/api-188902596-run",
+        "security": []
+      }
+    }
+  },
+  "components": {
+    "schemas": {},
+    "securitySchemes": {}
+  },
+  "servers": []
+}

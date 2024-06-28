@@ -15,13 +15,15 @@ import (
 	"time"
 )
 
+// GetScanUUID 获取uuid
 func GetScanUUID(ctx *gin.Context) {
 	data := make(map[string]string)
 	data["uuid"] = uuid.New().String()
 	RespSuccessWithData(ctx, data)
 }
 
-func GetScanDetail(ctx *gin.Context) {
+// GetScanDetail 获取扫描结果
+func GetScanResult(ctx *gin.Context) {
 	var res ReqScanResponse
 	var uri struct {
 		UUID string `uri:"uuid"`
@@ -33,12 +35,18 @@ func GetScanDetail(ctx *gin.Context) {
 	}
 	res.ScanStatus = make(map[string]any)
 
+	// 从内存中获取扫描的结果
 	ipScans := scanner.GetIPScansByUUID(uri.UUID)
+	// 将过扫描结果转换数据格式
 	ips := newIpScanResp(ipScans)
-	res.Data = sortByIps(ips)
+	// 按照IP排序
+	res.ScanResult = sortByIps(ips)
 
+	// 获取扫描状态
 	uuidStatus := scanner.GetIPScansStatusByUUID(uri.UUID)
 	if uuidStatus == nil {
+		slog.Error("get scan status by uuid fail")
+		RespError(ctx, RespCodeSystemInternalError)
 		return
 	}
 	if uuidStatus.FinishNumber == uuidStatus.TaskTotal {
@@ -52,8 +60,10 @@ func GetScanDetail(ctx *gin.Context) {
 		res.ScanStatus["process"] = process * 100
 		res.ScanStatus["running_status"] = scanner.IPStatusRunning
 	}
+	RespSuccessWithData(ctx, res)
 }
 
+// ScanStart 开始扫描
 func ScanStart(ctx *gin.Context) {
 	var req ReqScan
 
@@ -71,6 +81,7 @@ func ScanStart(ctx *gin.Context) {
 		return
 	}
 
+	// 扫描前清空之前的扫描结果
 	scanner.CleanIPScanByUUID(req.UUID)
 
 	// task加入队列
@@ -85,6 +96,7 @@ func ScanStart(ctx *gin.Context) {
 	}
 
 	closeChan := make(chan struct{}, workerNum)
+	// 将closeChan存储到内存中
 	scanner.ReceiveCloseChanByUUID(req.UUID, closeChan)
 	scanner.UpdateKeepAliveAndTaskTotal(req.UUID, time.Now().Add(time.Second*time.Duration(KeepAlive)),
 		len(tasks))
@@ -98,6 +110,7 @@ func ScanStart(ctx *gin.Context) {
 	RespSuccess(ctx)
 }
 
+// ScanStop 停止扫描
 func ScanStop(ctx *gin.Context) {
 	var param struct {
 		UUID string `form:"uuid"`
@@ -111,6 +124,7 @@ func ScanStop(ctx *gin.Context) {
 	RespSuccess(ctx)
 }
 
+// parseScanReq 解析扫描入参
 func parseScanReq(req ReqScan) ([]scanner.Task, error) {
 	var tmpTask scanner.Task
 	tasks := make([]scanner.Task, 0)
@@ -198,7 +212,7 @@ func incIP(ip net.IP) net.IP {
 	return ip
 }
 
-func newIpScanResp(ips []*scanner.IPScan) map[string]interface{} {
+func newIpScanResp(ips []*scanner.IPScanResult) map[string]interface{} {
 	var resp = make(map[string]interface{})
 	for _, scan := range ips {
 		var scanDetail = make(map[string]interface{})
@@ -236,7 +250,7 @@ func sortByIps(ips map[string]interface{}) []interface{} {
 	for ip, _ := range ips {
 		lastOctet, err := getLastOctet(ip)
 		if err != nil {
-			fmt.Println("Error parsing IP:", err)
+			slog.Error("Error parsing IP:", err)
 			daemons = append(daemons, ip)
 			continue
 		}

@@ -1,7 +1,7 @@
 package handler
 
 type ReqScanResponse struct {
-	CommonResponse
+	ScanResult any            `json:"scan_result"`
 	ScanStatus map[string]any `json:"scan_status"`
 }
 
