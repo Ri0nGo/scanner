@@ -35,4 +35,4 @@ scanner-api 是一个可以检测主机地址是否存活，端口是否开发�
 
 # 5. 扫描执行流程图
 
-![WebUI.png](wiki%2Fimg%2FWebUI.png)
+![扫描执行流程图.png](wiki%2Fimg%2F%C9%A8%C3%E8%D6%B4%D0%D0%C1%F7%B3%CC%CD%BC.png)
