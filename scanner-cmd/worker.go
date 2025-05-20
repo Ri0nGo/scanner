@@ -7,7 +7,7 @@ import (
 
 func worker(tasks chan Task, resultChan chan ExecResult) {
 	for task := range tasks {
-		conn, err := net.Dial("tcp", fmt.Sprintf("%s:%d", task.Host, task.Port))
+		conn, err := net.DialTimeout("tcp", fmt.Sprintf("%s:%d", task.Host, task.Port), time.Second)
 		ret := ExecResult{
 			Port: task.Port,
 		}
